@@ -74,7 +74,7 @@ export function ButtonSendSticker(props) {
                         {appConfig.stickers.map((sticker) => (
                             <Text
                                 onClick={() => {
-                                    // console.log('[DENTRO DO COMPONENTE] Clicou no sticker:', sticker);
+                                    // console.log('[INSIDE  COMPONENT] Clicked no sticker:', sticker);
                                     if (Boolean(props.onStickerClick)) {
                                         props.onStickerClick(sticker);
                                     }

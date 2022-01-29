@@ -3,7 +3,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import appConfig from '../config.json';
 
-function Titulo(props) {
+function Title(props) {
     const Tag = props.tag || 'h1';
     return (
         <>
@@ -19,22 +19,22 @@ function Titulo(props) {
     );
 }
 
-// Componente React
+// Component React
 // function HomePage() {
 //     // JSX
 //     return (
 //         <div>
 //             <GlobalStyle />
-//             <Titulo tag="h2">Boas vindas de volta!</Titulo>
+//             <Title tag="h2">Welcome Back!</Title>
 //             <h2>Discord - Alura Matrix</h2>
 //         </div>
 //     )
 // }
 // export default HomePage
 
-export default function PaginaInicial() {
+export default function InitialPage() {
     const [username, SetUsername] = React.useState('melnatal');
-    const roteamento = useRouter();
+    const routing = useRouter();
 
     return (
         <>
@@ -62,20 +62,20 @@ export default function PaginaInicial() {
                         backgroundColor: appConfig.theme.colors.neutrals[700],
                     }}
                 >
-                    {/* Formulário */}
+                    {/* Form */}
                     <Box
                         as="form"
-                        onSubmit={function (infosDoEvento) {
-                            infosDoEvento.preventDefault();
-                            console.log('alguem submeteu o form');
-                            roteamento.push(`/chat?username=${username}`);
+                        onSubmit={function (infosDoEvent) {
+                            infosDoEvent.preventDefault();
+                            console.log('someone submit the form');
+                            routing.push(`/chat?username=${username}`);
                         }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                             width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
                         }}
                     >
-                        <Titulo tag="h2">Bem vindo de volta!</Titulo>
+                        <Title tag="h2">Welcome Back!</Title>
                         <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
                             {appConfig.name}
                         </Text>
@@ -83,7 +83,7 @@ export default function PaginaInicial() {
                              type='text'
                              value={username}
                              onChange={function(event){
-                                 console.log('usuario digitou', event.target.value);
+                                 console.log('user type', event.target.value);
 
                                  const valor= event.target.value;
                                  setUsername(valor);
@@ -95,7 +95,7 @@ export default function PaginaInicial() {
                         <TextField
                             value={username}
                             onchange={function (event) {
-                                console.log('usuario digitou', event.target.value);
+                                console.log('user type', event.target.value);
                                 const valor = event.target.value;
                                 setUsername(valor);
                             }}
@@ -111,7 +111,7 @@ export default function PaginaInicial() {
                         />
                         <Button
                             type='submit'
-                            label='Entrar'
+                            label='submit'
                             fullWidth
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["000"],
@@ -121,7 +121,7 @@ export default function PaginaInicial() {
                             }}
                         />
                     </Box>
-                    {/* Formulário */}
+                    {/* Form */}
 
 
                     {/* Photo Area */}

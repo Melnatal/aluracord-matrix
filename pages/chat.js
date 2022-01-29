@@ -9,39 +9,39 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5v
 const SUPABASE_URL = 'https://yujydnfowepzublpfivi.supabase.co';
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-function escutaMensagemEmTempoReal(adicionaMensagem) {
+function ListenTheMusicInRealTime(putMessage) {
     return supabaseClient
-        .from('mensagem')
-        .on('INSERT', (respostaLive) => {
-            adicionaMensagem(respostaLive.new);
+        .from('message')
+        .on('INSERT', (answerLive) => {
+            putMessage(answerLive.new);
         })
         .subscribe();
 }
 
 export default function ChatPage() {
-    const roteamento = useRouter();
-    const usuarioLogado = roteamento.query.username;
-    const [mensagem, setMensagem] = React.useState('');
-    const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
+    const routing = useRouter();
+    const userLogged = routing.query.username;
+    const [message, setMessage] = React.useState('');
+    const [listOfMessages, setListOfMessages] = React.useState([]);
 
     React.useEffect(() => {
         supabaseClient
-            .from('mensagens')
+            .from('messages')
             .select('*')
             .order('id', { ascending: false })
             .then(({ data }) => {
-                console.log('Dados da consulta:', data);
-                setListaDeMensagens(data);
+                console.log('Data to consult:', data);
+                setListOfMessages(data);
             });
-        const subscription = escutaMensagemEmTempoReal((novaMensagem) => {
-            console.log('Nova mensagem:', novaMensagem);
-            console.log('listaDeMensagens', listaDeMensagens);
+        const subscription = ListenTheMusicInRealTime((newMessage) => {
+            console.log('New message:', newMessage);
+            console.log('listOfMessages', listOfMessages);
 
-            setListaDeMensagens((valorAtualDaLista) => {
-                console.log('valorAtualDaLista:', valorAtualDaLista);
+            setListOfMessages((valueActualAtList) => {
+                console.log('valueActualAtList:', valueActualAtList);
                 return [
-                    novaMensagem,
-                    ...valorAtualDaLista,
+                    newMessage,
+                    ...valueActualAtList,
                 ]
             });
         });
@@ -54,22 +54,22 @@ export default function ChatPage() {
 
 
 
-    function handleNovaMensagem(novaMensagem) {
-        const mensagem = {
-            //id: listaDeMensagens.length + 1,
-            de: 'usuarioLogado',
-            texto: novaMensagem,
+    function handleNewMessage(newMessage) {
+        const message = {
+            //id: listOfMessages.length + 1,
+            de: 'userLogged',
+            text: newMessage,
         };
 
         supabaseClient
-            .from('mensagens')
+            .from('messages')
             .insert([
-                mensagem
+                message
             ])
             .then(({ data }) => {
-                console.log('Criando mensagem:', data);
+                console.log('Write message:', data);
             });
-        setMensagem('');
+        setMessage('');
     }
     return (
         <Box
@@ -109,11 +109,11 @@ export default function ChatPage() {
                     }}
                 >
 
-                    <MessageList mensagens={listaDeMensagens} />
-                    {/*{listaDeMensagens.map((mensagemAtual) => {
+                    <MessageList messages={listOfMessages} />
+                    {/*{listOfMessages.map((messageActual) => {
                          return (
-                             <li key={mensagemAtual.id}>
-                             {mensagemAtual.de}: {mensagemAtual.texto}
+                             <li key={messageActual.id}>
+                             {messageActual.de}: {messageActual.text}
                              
                              </li>
                          )
@@ -127,19 +127,19 @@ export default function ChatPage() {
                         }}
                     >
                         <TextField
-                            value={mensagem}
+                            value={message}
                             onChange={(event) => {
                                 const valor = event.target.value;
-                                setMensagem(valor);
+                                setMessage(valor);
                             }}
 
                             onKeyPress={(event) => {
                                 if (event.key === 'Enter') {
                                     event.preventDefault();
-                                    handleNovaMensagem(mensagem);
+                                    handleNewMessage(message);
                                 }
                             }}
-                            placeholder="Insira sua mensagem aqui..."
+                            placeholder="Type your message here..."
                             type="textarea"
                             styleSheet={{
                                 width: '100%',
@@ -154,7 +154,7 @@ export default function ChatPage() {
                         />
                         <ButtonSendSticker
                             onStickerClick={(sticker) => {
-                                handleNovaMensagem(':sticker:' + sticker);
+                                handleNewMessage(':sticker:' + sticker);
                             }}
                         />
                     </Box>
@@ -196,11 +196,11 @@ function MessageList(props) {
                 marginBottom: '16px',
             }}
         >
-            {props.mensagens.map((mensagem) => {
+            {props.messages.map((message) => {
                 return (
 
                     <Text
-                        key={mensagem.id}
+                        key={message.id}
                         tag="li"
                         styleSheet={{
                             borderRadius: '5px',
@@ -227,7 +227,7 @@ function MessageList(props) {
                                 src={`https://github.com/${mensagem.de}.png`}
                             />
                             <Text tag="strong">
-                                {mensagem.de}
+                                {message.de}
                             </Text>
                             <Text
                                 styleSheet={{
@@ -240,12 +240,12 @@ function MessageList(props) {
                                 {(new Date().toLocaleDateString())}
                             </Text>
                         </Box>
-                        {mensagem.texto.startsWith(':sticker:')
+                        {message.text.startsWith(':sticker:')
                             ? (
-                                <Image src={mensagem.texto.replace(';sticker:', '')} />
+                                <Image src={message.text.replace(';sticker:', '')} />
                             )
                             : (
-                                mensagem.texto
+                                message.text
                             )}
                     </Text>
                 );
